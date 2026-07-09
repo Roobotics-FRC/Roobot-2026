@@ -18,11 +18,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.LiftIntake;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.SpinTurret;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShootSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -42,8 +44,9 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    private final ShootSubsystem shootSubsystem = new ShootSubsystem();
     private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     public RobotContainer() {
         configureBindings();
@@ -68,7 +71,9 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        operatorController.a().whileTrue(new RunShooter(intakeSubsystem, 12));
+        operatorController.a().whileTrue(new RunShooter(shootSubsystem, 12));
+        operatorController.leftTrigger().whileTrue(new RunIntake(intakeSubsystem, 12));
+
         //operatorController.b().whileTrue(new SpinTurret(turretSubsystem, -12));
         //operatorController.x().whileTrue(new SpinTurret(turretSubsystem, 12));
         //operatorController.y().whileTrue(new LiftIntake(intakeSubsystem, 12));
