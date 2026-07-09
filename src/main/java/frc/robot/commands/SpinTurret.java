@@ -1,21 +1,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
-public class RunShooter extends Command{
-    IntakeSubsystem intakeSubsystem;
+public class SpinTurret extends Command{
+    TurretSubsystem turretSubsystem;
     double speed;
 
-    public RunShooter(IntakeSubsystem intakeSubsystem, double speed) {
-        this.intakeSubsystem = intakeSubsystem;
+    public SpinTurret(TurretSubsystem turretSubsystem, double speed) {
+        this.turretSubsystem = turretSubsystem;
         this.speed = speed;
-        addRequirements(intakeSubsystem);
+        addRequirements(turretSubsystem);
     }
 
     @Override
     public void initialize() {
-        intakeSubsystem.SetIntakeSpeed(speed);
+        turretSubsystem.TurretTurn(speed);
     }
 
     @Override
@@ -29,6 +29,6 @@ public class RunShooter extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.SetIntakeSpeed(0);
+        turretSubsystem.TurretTurn(0);
     }
 }
