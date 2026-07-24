@@ -9,7 +9,9 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -50,6 +52,13 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+            // center pose reset hardcoded for now for testing purposes!
+        Pose2d centerPosition = new Pose2d(
+            0,//(Units.inchesToMeters(651.2))/2.0,
+            (Units.inchesToMeters(317.7))/2.0,
+            Rotation2d.fromDegrees(0)
+        );
+        drivetrain.resetPose(centerPosition);
     }
 
     private void configureBindings() {
@@ -74,9 +83,9 @@ public class RobotContainer {
         operatorController.a().whileTrue(new RunShooter(shootSubsystem, 12));
         operatorController.leftTrigger().whileTrue(new RunIntake(intakeSubsystem, 12));
 
-        //operatorController.b().whileTrue(new SpinTurret(turretSubsystem, -12));
-        //operatorController.x().whileTrue(new SpinTurret(turretSubsystem, 12));
-        //operatorController.y().whileTrue(new LiftIntake(intakeSubsystem, 12));
+        //operatorController.b().whileTrue(new SpinTurret(turretSubsystem, -12)); we are NOT spinning the turret I don't have a limit on it yet
+        //operatorController.x().whileTrue(new SpinTurret(turretSubsystem, 12)); we are NOT spinning the turret this way either I don't have a limit on it yet
+        //operatorController.y().whileTrue(new LiftIntake(intakeSubsystem, 12)); we are NOT lifting the intake yet one motor will not move it :c
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

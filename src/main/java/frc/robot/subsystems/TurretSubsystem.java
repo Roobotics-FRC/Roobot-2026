@@ -10,7 +10,7 @@ public class TurretSubsystem extends SubsystemBase {
     public TurretSubsystem(){
     }
     
-    public void TurretTurn(double speed) { // need to code hard limits
+    public void TurretTurn(double speed) { // need to code hard limits (TURRET TURNN)
         t_turnMotor.setControl(new VoltageOut(speed));
     }
 }
