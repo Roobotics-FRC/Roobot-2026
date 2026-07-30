@@ -5,17 +5,17 @@ import frc.robot.subsystems.ShootSubsystem;
 
 public class RunShooter extends Command{
     ShootSubsystem shootSubsystem;
-    double speed;
+    double shootRPS;
 
-    public RunShooter(ShootSubsystem shootSubsystem, double speed) {
+    public RunShooter(ShootSubsystem shootSubsystem, double shootRPS) {
         this.shootSubsystem = shootSubsystem;
-        this.speed = speed;
+        this.shootRPS = shootRPS;
         addRequirements(shootSubsystem);
     }
 
     @Override
     public void initialize() {
-        shootSubsystem.SetShootSpeed(speed);
+        shootSubsystem.SetShootSpeed(shootRPS);
     }
 
     @Override

@@ -29,6 +29,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class RobotContainer {
+    public double SpeedMultiplier = 1.0; //public so robot.java can read it and update on elastic
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -54,7 +55,7 @@ public class RobotContainer {
         configureBindings();
             // center pose reset hardcoded for now for testing purposes!
         Pose2d centerPosition = new Pose2d(
-            0,//(Units.inchesToMeters(651.2))/2.0,
+            0,//(Units.inchesToMeters(651.2))/2.0, (center of the field)
             (Units.inchesToMeters(317.7))/2.0,
             Rotation2d.fromDegrees(0)
         );
@@ -67,8 +68,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driveController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * SpeedMultiplier) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driveController.getLeftX() * MaxSpeed * SpeedMultiplier) // Drive left with negative X (left)
                     .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
@@ -80,7 +81,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        operatorController.a().whileTrue(new RunShooter(shootSubsystem, 12));
+        operatorController.a().whileTrue(new RunShooter(shootSubsystem, 31)); //should be 25 when switched to VelocityVoltage
         operatorController.leftTrigger().whileTrue(new RunIntake(intakeSubsystem, 12));
 
         //operatorController.b().whileTrue(new SpinTurret(turretSubsystem, -12)); we are NOT spinning the turret I don't have a limit on it yet
@@ -96,6 +97,9 @@ public class RobotContainer {
 
         // Reset the field-centric heading on left bumper press.
         driveController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        driveController.rightBumper()
+            .onTrue(Commands.runOnce(() -> SpeedMultiplier = 0.3))
+            .onFalse(Commands.runOnce(() -> SpeedMultiplier = 1.0));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
