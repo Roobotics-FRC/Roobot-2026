@@ -18,27 +18,34 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
-import frc.robot.commands.RunShooter;
-import frc.robot.commands.LiftIntake;
-import frc.robot.commands.RunIntake;
-import frc.robot.commands.SpinTurret;
-import frc.robot.subsystems.ShootSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.generated.TunerConstants;
+import frc.robot.Constants;
+
+import frc.robot.commands.RunShooter;
+import frc.robot.commands.RunIntake;
+import frc.robot.commands.RunFloor;
+// import frc.robot.commands.SpinTurret;
+
+import frc.robot.subsystems.ShootSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.FloorSubsystem;
+// import frc.robot.subsystems.TurretSubsystem;
+
 
 public class RobotContainer {
     public double SpeedMultiplier = 1.0; //public so robot.java can read it and update on elastic
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
+    // Setting up bindings for necessary control of the swerve drive platform 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.2).withRotationalDeadband(MaxAngularRate * 0.2) // Add a (2)0% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    
+    /* unused 
+    // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt(); */
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -48,8 +55,9 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final ShootSubsystem shootSubsystem = new ShootSubsystem();
-    private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+    private final FloorSubsystem floorSubsystem = new FloorSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    //private final TurretSubsystem turretSubsystem = new TurretSubsystem();
 
     public RobotContainer() {
         configureBindings();
@@ -81,8 +89,9 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        operatorController.a().whileTrue(new RunShooter(shootSubsystem, 31)); //should be 25 when switched to VelocityVoltage
-        operatorController.leftTrigger().whileTrue(new RunIntake(intakeSubsystem, 12));
+        operatorController.rightTrigger().whileTrue(new RunShooter(shootSubsystem, 31, floorSubsystem, 5)); //should be 25 when switched to VelocityVoltage
+        operatorController.leftTrigger().whileTrue(new RunIntake(intakeSubsystem, 11.5, floorSubsystem, 5));
+        operatorController.x().whileTrue(new RunFloor(floorSubsystem, 5));
 
         //operatorController.b().whileTrue(new SpinTurret(turretSubsystem, -12)); we are NOT spinning the turret I don't have a limit on it yet
         //operatorController.x().whileTrue(new SpinTurret(turretSubsystem, 12)); we are NOT spinning the turret this way either I don't have a limit on it yet
@@ -106,6 +115,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // Simple drive forward auton
+        //hi mia i love you - georgie
         final var idle = new SwerveRequest.Idle();
         return Commands.sequence(
             // Reset our field centric heading to match the robot
