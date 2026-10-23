@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
-import frc.robot.Constants;
+//import frc.robot.Constants;
 
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunIntake;
@@ -92,6 +92,7 @@ public class RobotContainer {
         operatorController.rightTrigger().whileTrue(new RunShooter(shootSubsystem, 31, floorSubsystem, 5)); //should be 25 when switched to VelocityVoltage
         operatorController.leftTrigger().whileTrue(new RunIntake(intakeSubsystem, 11.5, floorSubsystem, 5));
         operatorController.x().whileTrue(new RunFloor(floorSubsystem, 5));
+        operatorController.a().whileTrue(new RunFloor(floorSubsystem, -5));
 
         //operatorController.b().whileTrue(new SpinTurret(turretSubsystem, -12)); we are NOT spinning the turret I don't have a limit on it yet
         //operatorController.x().whileTrue(new SpinTurret(turretSubsystem, 12)); we are NOT spinning the turret this way either I don't have a limit on it yet
